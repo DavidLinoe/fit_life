@@ -1,0 +1,6 @@
+@fit_life_HostAddress = http://localhost:5259
+
+GET {{fit_life_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
