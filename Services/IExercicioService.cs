@@ -1,6 +1,13 @@
-﻿namespace fit_life.Services
+﻿using fit_life.Models;
+
+namespace fit_life.Services
 {
     public interface IExercicioService
     {
+        Task<List<Exercicio>> ObterTodos();
+        Task<Exercicio> ObterPorId(int id);
+        Task<Exercicio> CriarExercicio(string nome, string instrucoes, string area, int reps, int series);
+        Task<Exercicio> AtualizarExercicio(int id, string nome, string instrucoes, string area, int reps, int series);
+        Task<bool> DeletarExercicio(int id);
     }
 }

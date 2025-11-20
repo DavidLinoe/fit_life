@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using fit_life.Services;
+using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace fit_life.Controllers
 {
@@ -8,36 +8,93 @@ namespace fit_life.Controllers
     [ApiController]
     public class ExercicioController : ControllerBase
     {
-        // GET: api/<ExercicioController>
+        private readonly IExercicioService _service;
+
+        public ExercicioController(IExercicioService service)
+        {
+            _service = service;
+        }
+
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IActionResult> Get()
         {
-            return new string[] { "value1", "value2" };
+            var exercicios = await _service.ObterTodos();
+            return Ok(exercicios);
         }
 
-        // GET api/<ExercicioController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            return "value";
+            var exercicio = await _service.ObterPorId(id);
+
+            if (exercicio == null)
+                return NotFound(new { Message = "Exercício não encontrado." });
+
+            return Ok(exercicio);
         }
 
-        // POST api/<ExercicioController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> Post([FromBody] CreateExercicioRequest request)
         {
+            if (request == null) return BadRequest();
+
+            try
+            {
+                var novoExercicio = await _service.CriarExercicio(
+                    request.Nome,
+                    request.Instrucoes,
+                    request.AreaTreinada,
+                    request.Repeticoes,
+                    request.Series
+                );
+
+                return CreatedAtAction(nameof(GetById), new { id = novoExercicio.Id }, novoExercicio);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        // PUT api/<ExercicioController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(int id, [FromBody] UpdateExercicioRequest request)
         {
+            var exercicioAtualizado = await _service.AtualizarExercicio(
+                id,
+                request.Nome,
+                request.Instrucoes,
+                request.AreaTreinada,
+                request.Repeticoes,
+                request.Series
+            );
+
+            if (exercicioAtualizado == null)
+                return NotFound(new { Message = "Exercício não encontrado." });
+
+            return Ok(exercicioAtualizado);
         }
 
-        // DELETE api/<ExercicioController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            var sucesso = await _service.DeletarExercicio(id);
+
+            if (!sucesso) return NotFound();
+
+            return Ok(new { Message = "Exercício removido com sucesso." });
         }
+    }
+
+    public class CreateExercicioRequest
+    {
+        public string Nome { get; set; }
+        public string Instrucoes { get; set; }
+        public string AreaTreinada { get; set; }
+        public int Repeticoes { get; set; }
+        public int Series { get; set; }
+    }
+
+    public class UpdateExercicioRequest : CreateExercicioRequest
+    {
     }
 }
