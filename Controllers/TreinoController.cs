@@ -1,8 +1,9 @@
+using fit_life.Data;
+using fit_life.DTOs.Treino;
+using fit_life.Models;
+using fit_life.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using fit_life.Data;
-using fit_life.Models;
-using fit_life.DTOs.Treino;
 
 namespace fit_life.Controllers
 {
@@ -10,58 +11,40 @@ namespace fit_life.Controllers
     [ApiController]
     public class TreinoController : ControllerBase
     {
-        private readonly DataContext _context;
+        private readonly ITreinoService _service;
 
-        public TreinoController(DataContext context)
+        public TreinoController(ITreinoService service)
         {
-            _context = context;
+            _service = service;
         }
 
-        // GET: api/treino
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var treinos = await _context.TreinoTable
-                .Include(t => t.Exercicios) // inclui os exercícios vinculados
-                .ToListAsync();
-
+            var treinos = await _service.ObterTodos();
             return Ok(treinos);
         }
 
-        // GET api/treino/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var treino = await _context.TreinoTable
-                .Include(t => t.Exercicios)
-                .FirstOrDefaultAsync(x => x.Id == id);
+            var treino = await _service.ObterPorId(id);
 
             if (treino == null)
-                return NotFound(new { Message = $"Treino com Id={id} não encontrado." });
+                return NotFound(new { Message = "Treino não encontrado." });
 
             return Ok(treino);
         }
 
-        // POST api/treino
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateTreinoRequest request)
         {
-            if (request == null)
-                return BadRequest("O corpo da requisição é inválido.");
+            if (request == null) return BadRequest();
 
             try
             {
-                var treino = new Treino(request.Nome, request.Tempo);
-
-                _context.TreinoTable.Add(treino);
-                await _context.SaveChangesAsync();
-
-                // Retorna o treino criado com os exercícios inclusos
-                var createdTreino = await _context.TreinoTable
-                    .Include(t => t.Exercicios)
-                    .FirstOrDefaultAsync(t => t.Id == treino.Id);
-
-                return CreatedAtAction(nameof(GetById), new { id = treino.Id }, createdTreino);
+                var treinoCriado = await _service.CriarTreino(request.Nome, request.Tempo);
+                return CreatedAtAction(nameof(GetById), new { id = treinoCriado.Id }, treinoCriado);
             }
             catch (ArgumentException ex)
             {
@@ -69,101 +52,36 @@ namespace fit_life.Controllers
             }
         }
 
-        // PUT api/treino/5/tempo
         [HttpPut("{id}/tempo")]
         public async Task<IActionResult> PutTempo(int id, [FromBody] float tempo)
         {
-            var treino = await _context.TreinoTable.FirstOrDefaultAsync(x => x.Id == id);
-            if (treino == null)
-                return NotFound(new { Message = $"Treino com Id={id} não encontrado." });
+            var treinoAtualizado = await _service.AtualizarTempo(id, tempo);
 
-            treino.AtualizarTempo(tempo);
-            _context.TreinoTable.Update(treino);
-            await _context.SaveChangesAsync();
+            if (treinoAtualizado == null)
+                return NotFound(new { Message = "Treino não encontrado." });
 
-            var updated = await _context.TreinoTable
-                .Include(t => t.Exercicios)
-                .FirstOrDefaultAsync(t => t.Id == id);
-
-            return Ok(new
-            {
-                Message = "Tempo do treino atualizado com sucesso.",
-                Updated = updated
-            });
+            return Ok(new { Message = "Atualizado!", Updated = treinoAtualizado });
         }
 
-        // POST api/treino/5/exercicios
         [HttpPost("{id}/exercicios")]
         public async Task<IActionResult> PostExercicio(int id, [FromBody] Exercicio exercicio)
         {
-            if (exercicio == null)
-                return BadRequest("O corpo da requisição é inválido.");
+            var treinoAtualizado = await _service.AdicionarExercicio(id, exercicio);
 
-            var treino = await _context.TreinoTable
-                .Include(t => t.Exercicios)
-                .FirstOrDefaultAsync(x => x.Id == id);
+            if (treinoAtualizado == null)
+                return NotFound("Treino não encontrado");
 
-            if (treino == null)
-                return NotFound(new { Message = $"Treino com Id={id} não encontrado." });
-
-            treino.AdicionarExercicio(exercicio);
-            _context.TreinoTable.Update(treino);
-            await _context.SaveChangesAsync();
-
-            var updated = await _context.TreinoTable
-                .Include(t => t.Exercicios)
-                .FirstOrDefaultAsync(t => t.Id == id);
-
-            return Ok(new
-            {
-                Message = "Exercício adicionado ao treino com sucesso.",
-                Updated = updated
-            });
+            return Ok(treinoAtualizado);
         }
 
-        // DELETE api/treino/5/exercicios
-        [HttpDelete("{id}/exercicios")]
-        public async Task<IActionResult> DeleteExercicio(int id, [FromBody] Exercicio exercicio)
-        {
-            if (exercicio == null)
-                return BadRequest("O corpo da requisição é inválido.");
-
-            var treino = await _context.TreinoTable
-                .Include(t => t.Exercicios)
-                .FirstOrDefaultAsync(x => x.Id == id);
-
-            if (treino == null)
-                return NotFound(new { Message = $"Treino com Id={id} não encontrado." });
-
-            treino.RemoverExercicio(exercicio);
-            _context.TreinoTable.Update(treino);
-            await _context.SaveChangesAsync();
-
-            var updated = await _context.TreinoTable
-                .Include(t => t.Exercicios)
-                .FirstOrDefaultAsync(t => t.Id == id);
-
-            return Ok(new
-            {
-                Message = "Exercício removido do treino com sucesso.",
-                Updated = updated
-            });
-        }
-
-        // DELETE api/treino/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var treino = await _context.TreinoTable.FirstOrDefaultAsync(x => x.Id == id);
-            if (treino == null)
-                return NotFound(new { Message = $"Treino com Id={id} não encontrado." });
+            var sucesso = await _service.DeletarTreino(id);
 
-            _context.TreinoTable.Remove(treino);
-            await _context.SaveChangesAsync();
+            if (!sucesso) return NotFound();
 
-            return Ok(new { Message = $"Treino '{treino.Nome}' removido com sucesso." });
+            return Ok(new { Message = "Treino removido com sucesso." });
         }
     }
-
- 
 }
