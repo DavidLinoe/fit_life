@@ -11,6 +11,9 @@ namespace fit_life.Data
 
         }
 
+        //dotnet build 
+        //dotnet ef database update      --  esse é equivalente ao Update-Database do Package Manager Console
+
         public DbSet<Exercicio> ExercicioTable { get; set; }
         public DbSet<Treino> TreinoTable { get; set; }
         public DbSet<Habito> HabitoTable { get; set; }
