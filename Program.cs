@@ -1,4 +1,5 @@
 
+using fit_life.Services;
 using fit_life.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,6 +25,9 @@ namespace fit_life
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddScoped<ITreinoService, TreinoService>();
+            builder.Services.AddScoped<IHabitoService, HabitoService>();
+            builder.Services.AddScoped<IExercicioService, ExercicioService>();
 
             var app = builder.Build();
 
