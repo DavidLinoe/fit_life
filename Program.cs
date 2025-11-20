@@ -1,4 +1,8 @@
 
+using fit_life.Data;
+using Microsoft.EntityFrameworkCore;
+
+
 namespace fit_life
 {
     public class Program
@@ -10,6 +14,13 @@ namespace fit_life
             // Add services to the container.
 
             builder.Services.AddControllers();
+
+
+
+            builder.Services.AddDbContext<DataContext>(
+                options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
