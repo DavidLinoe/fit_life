@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using fit_life.Data;
 using fit_life.Models;
+using fit_life.DTOs.Treino;
 
 namespace fit_life.Controllers
 {
@@ -164,10 +165,5 @@ namespace fit_life.Controllers
         }
     }
 
-    // DTOs para as requisições
-    public class CreateTreinoRequest
-    {
-        public string Nome { get; set; }
-        public float Tempo { get; set; }
-    }
+ 
 }
