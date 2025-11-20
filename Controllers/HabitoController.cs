@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+﻿using fit_life.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace fit_life.Controllers
 {
@@ -8,36 +7,90 @@ namespace fit_life.Controllers
     [ApiController]
     public class HabitoController : ControllerBase
     {
-        // GET: api/<ValuesController>
+        private readonly IHabitoService _service;
+
+        public HabitoController(IHabitoService service)
+        {
+            _service = service;
+        }
+
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IActionResult> Get()
         {
-            return new string[] { "value1", "value2" };
+            var habitos = await _service.ObterTodos();
+            return Ok(habitos);
         }
 
-        // GET api/<ValuesController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            return "value";
+            var habito = await _service.ObterPorId(id);
+
+            if (habito == null)
+                return NotFound(new { Message = "Hábito não encontrado." });
+
+            return Ok(habito);
         }
 
-        // POST api/<ValuesController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> Post([FromBody] CreateHabitoRequest request)
         {
+            if (request == null) return BadRequest();
+
+            try
+            {
+                var novoHabito = await _service.CriarHabito(
+                    request.Nome,
+                    request.Execucao,
+                    request.Recomendacoes,
+                    request.Tempo
+                );
+
+                return CreatedAtAction(nameof(GetById), new { id = novoHabito.Id }, novoHabito);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        // PUT api/<ValuesController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(int id, [FromBody] UpdateHabitoRequest request)
         {
+            var habitoAtualizado = await _service.AtualizarHabito(
+                id,
+                request.Nome,
+                request.Execucao,
+                request.Recomendacoes,
+                request.Tempo
+            );
+
+            if (habitoAtualizado == null)
+                return NotFound(new { Message = "Hábito não encontrado." });
+
+            return Ok(habitoAtualizado);
         }
 
-        // DELETE api/<ValuesController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            var sucesso = await _service.DeletarHabito(id);
+
+            if (!sucesso) return NotFound();
+
+            return Ok(new { Message = "Hábito removido com sucesso." });
         }
+    }
+
+    public class CreateHabitoRequest
+    {
+        public string Nome { get; set; }
+        public string Execucao { get; set; }
+        public string Recomendacoes { get; set; }
+        public float Tempo { get; set; }
+    }
+
+    public class UpdateHabitoRequest : CreateHabitoRequest
+    {
     }
 }
