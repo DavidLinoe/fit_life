@@ -1,4 +1,5 @@
-﻿using fit_life.Services;
+﻿using fit_life.DTOs.Habito;
+using fit_life.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -84,13 +85,6 @@ namespace fit_life.Controllers
         }
     }
 
-    public class CreateHabitoRequest
-    {
-        public string Nome { get; set; }
-        public string Execucao { get; set; }
-        public string Recomendacoes { get; set; }
-        public float Tempo { get; set; }
-    }
 
     public class UpdateHabitoRequest : CreateHabitoRequest
     {

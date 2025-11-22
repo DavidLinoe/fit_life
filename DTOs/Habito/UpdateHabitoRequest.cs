@@ -1,6 +1,6 @@
 ﻿namespace fit_life.DTOs.Habito
 {
-    public class UpdateHabitoRequest
+    public class UpdateHabitoRequest: CreateHabitoRequest
     {
     }
 }
