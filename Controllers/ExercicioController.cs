@@ -1,9 +1,11 @@
 ﻿using fit_life.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
 namespace fit_life.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ExercicioController : ControllerBase
