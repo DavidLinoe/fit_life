@@ -1,6 +1,7 @@
 ﻿using fit_life.Data;
 using fit_life.Models;
 using fit_life.Services;
+using fit_life.DTOs.Auth;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -48,13 +49,6 @@ namespace fit_life.Controllers
         }
     }
 
-    public class RegisterDto {
-        public string Name { get; set; } 
-        public string Email { get; set; } 
-        public string Senha { get; set; } 
-    }
-    public class LoginDto { 
-        public string Email { get; set; }
-        public string Senha { get; set; }
-    }
+
+
 }

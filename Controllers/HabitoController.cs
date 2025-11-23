@@ -86,7 +86,4 @@ namespace fit_life.Controllers
     }
 
 
-    public class UpdateHabitoRequest : CreateHabitoRequest
-    {
-    }
 }
