@@ -4,6 +4,7 @@ using fit_life.Services;
 using fit_life.DTOs.Auth;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using fit_life.DTOs.Auth;
 
 namespace fit_life.Controllers
 {
