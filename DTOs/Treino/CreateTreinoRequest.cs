@@ -4,6 +4,7 @@
     {
         public string Nome { get; set; }
         public float Tempo { get; set; }
+        public List<int> ExerciciosIds { get; set; } = new();
 
     }
 }

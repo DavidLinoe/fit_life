@@ -45,7 +45,12 @@ namespace fit_life.Controllers
 
             try
             {
-                var treinoCriado = await _service.CriarTreino(request.Nome, request.Tempo);
+                var treino = new Treino(request.Nome, request.Tempo);
+                var treinoCriado = await _service.CriarTreino(
+                    request.Nome,
+                    request.Tempo,
+                    request.ExerciciosIds 
+                );
                 return CreatedAtAction(nameof(GetById), new { id = treinoCriado.Id }, treinoCriado);
             }
             catch (ArgumentException ex)
@@ -63,17 +68,6 @@ namespace fit_life.Controllers
                 return NotFound(new { Message = "Treino não encontrado." });
 
             return Ok(new { Message = "Atualizado!", Updated = treinoAtualizado });
-        }
-
-        [HttpPost("{id}/exercicios")]
-        public async Task<IActionResult> PostExercicio(int id, [FromBody] Exercicio exercicio)
-        {
-            var treinoAtualizado = await _service.AdicionarExercicio(id, exercicio);
-
-            if (treinoAtualizado == null)
-                return NotFound("Treino não encontrado");
-
-            return Ok(treinoAtualizado);
         }
 
         [HttpDelete("{id}")]
