@@ -1,6 +1,8 @@
 ﻿using fit_life.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using fit_life.DTOs.Llm;
+
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -42,10 +44,5 @@ namespace fit_life.Controllers
         }
     }
 
-    public class PedidoTreinoRequest
-    {
-        public string Perfil { get; set; } 
-        public string Objetivo { get; set; } 
-        public int DiasPorSemana { get; set; }
-    }
+
 }
