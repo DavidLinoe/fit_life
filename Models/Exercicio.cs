@@ -10,6 +10,7 @@
         public int Series { get; private set; }
         public string? ImagemBase64 { get; private set; }
 
+        public List<Treino> Treinos { get; set; } = new();
         public Exercicio(string nome, string instrucoes, string areaTreinada, int repeticoes, int series, string? imagemBase64  )
         {
             if (string.IsNullOrWhiteSpace(nome)) throw new ArgumentException("Nome inválido");
