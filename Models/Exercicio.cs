@@ -1,4 +1,6 @@
-﻿namespace fit_life.Models
+﻿using System.Text.Json.Serialization;
+
+namespace fit_life.Models
 {
     public class Exercicio
     {
@@ -9,7 +11,7 @@
         public int Repeticoes { get; private set; }
         public int Series { get; private set; }
         public string? ImagemBase64 { get; private set; }
-
+        [JsonIgnore]
         public List<Treino> Treinos { get; set; } = new();
         public Exercicio(string nome, string instrucoes, string areaTreinada, int repeticoes, int series, string? imagemBase64  )
         {
