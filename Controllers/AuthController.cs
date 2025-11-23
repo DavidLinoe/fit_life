@@ -3,6 +3,7 @@ using fit_life.Models;
 using fit_life.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using fit_life.DTOs.Auth;
 
 namespace fit_life.Controllers
 {
@@ -46,15 +47,5 @@ namespace fit_life.Controllers
             var token = _tokenService.GerarToken(usuario);
             return Ok(new { token = token, usuario = usuario.Name });
         }
-    }
-
-    public class RegisterDto {
-        public string Name { get; set; } 
-        public string Email { get; set; } 
-        public string Senha { get; set; } 
-    }
-    public class LoginDto { 
-        public string Email { get; set; }
-        public string Senha { get; set; }
     }
 }
