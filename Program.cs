@@ -83,6 +83,7 @@ namespace fit_life
             builder.Services.AddScoped<IHabitoService, HabitoService>();
             builder.Services.AddScoped<IExercicioService, ExercicioService>();
             builder.Services.AddHttpClient<ILlmService, LlmService>();
+            builder.Services.AddScoped<IHistoricoService, HistoricoService>();
             builder.Services.AddScoped<TokenService>();
 
             var app = builder.Build();

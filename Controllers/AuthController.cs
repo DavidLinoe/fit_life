@@ -1,6 +1,7 @@
 ﻿using fit_life.Data;
 using fit_life.Models;
 using fit_life.Services;
+using fit_life.DTOs.Auth;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using fit_life.DTOs.Auth;
@@ -48,4 +49,7 @@ namespace fit_life.Controllers
             return Ok(new { token = token, usuario = usuario.Name });
         }
     }
+
+
+
 }

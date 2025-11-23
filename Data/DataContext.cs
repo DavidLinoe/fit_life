@@ -18,6 +18,7 @@ namespace fit_life.Data
         public DbSet<Treino> TreinoTable { get; set; }
         public DbSet<Habito> HabitoTable { get; set; }
         public DbSet<Usuario> UsuarioTable { get; set; }
+        public DbSet<HistoricoTreino> HistoricoTreinoTable { get; set; }
 
 
     }

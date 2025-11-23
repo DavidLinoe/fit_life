@@ -26,11 +26,25 @@ namespace fit_life.Services
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<Treino> CriarTreino(string nome, float tempo)
+        public async Task<Treino> CriarTreino(string nome, float tempo, List<int> exerciciosIds)
         {
             var treino = new Treino(nome, tempo);
+
+            if (exerciciosIds != null && exerciciosIds.Any())
+            {
+                var exerciciosDoBanco = await _context.ExercicioTable
+                    .Where(e => exerciciosIds.Contains(e.Id))
+                    .ToListAsync();
+
+                foreach (var exercicio in exerciciosDoBanco)
+                {
+                    treino.AdicionarExercicio(exercicio);
+                }
+            }
+
             _context.TreinoTable.Add(treino);
             await _context.SaveChangesAsync();
+
             return treino;
         }
 

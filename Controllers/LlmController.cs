@@ -1,4 +1,5 @@
 ﻿using fit_life.Services;
+using fit_life.DTOs.Llm;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using fit_life.DTOs.Llm;
@@ -21,9 +22,9 @@ namespace fit_life.Controllers
         }
 
         [HttpPost("chat")]
-        public async Task<IActionResult> ChatLivre([FromBody] string pergunta)
+        public async Task<IActionResult> ChatLivre([FromBody] ChatRequest pergunta)
         {
-            var resposta = await _llmService.ObterResposta(pergunta);
+            var resposta = await _llmService.ObterResposta(pergunta.Mensagem);
             return Ok(new { mensagem = resposta });
         }
 
@@ -43,6 +44,5 @@ namespace fit_life.Controllers
             return Ok(new { treino_sugerido = treino });
         }
     }
-
-
+   
 }

@@ -8,7 +8,7 @@ namespace fit_life.Services
 
         Task<Treino> ObterPorId(int id);
 
-        Task<Treino> CriarTreino(string nome, float tempo);
+        Task<Treino> CriarTreino(string nome, float tempo, List<int> exerciciosIds);
 
         Task<Treino> AtualizarTempo(int id, float novoTempo);
 
