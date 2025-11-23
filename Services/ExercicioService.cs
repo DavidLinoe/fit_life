@@ -23,9 +23,9 @@ namespace fit_life.Services
             return await _context.ExercicioTable.FirstOrDefaultAsync(e => e.Id == id);
         }
 
-        public async Task<Exercicio> CriarExercicio(string nome, string instrucoes, string area, int reps, int series)
+        public async Task<Exercicio> CriarExercicio(string nome, string instrucoes, string area, int reps, int series, string? imagemBase64)
         {
-            var exercicio = new Exercicio(nome, instrucoes, area, reps, series);
+            var exercicio = new Exercicio(nome, instrucoes, area, reps, series, imagemBase64);
 
             _context.ExercicioTable.Add(exercicio);
             await _context.SaveChangesAsync();
@@ -33,12 +33,12 @@ namespace fit_life.Services
             return exercicio;
         }
 
-        public async Task<Exercicio> AtualizarExercicio(int id, string nome, string instrucoes, string area, int reps, int series)
+        public async Task<Exercicio> AtualizarExercicio(int id, string nome, string instrucoes, string area, int reps, int series, string? imagemBase64)
         {
             var exercicio = await ObterPorId(id);
             if (exercicio == null) return null;
 
-            exercicio.Atualizar(nome, instrucoes, area, reps, series);
+            exercicio.Atualizar(nome, instrucoes, area, reps, series, imagemBase64);
 
             await _context.SaveChangesAsync();
             return exercicio;

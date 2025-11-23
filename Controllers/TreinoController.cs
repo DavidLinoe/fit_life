@@ -2,11 +2,13 @@ using fit_life.Data;
 using fit_life.DTOs.Treino;
 using fit_life.Models;
 using fit_life.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace fit_life.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class TreinoController : ControllerBase

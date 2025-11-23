@@ -1,9 +1,12 @@
-﻿using fit_life.Services;
+﻿using fit_life.DTOs.Exercicio;
+using fit_life.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
 namespace fit_life.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ExercicioController : ControllerBase
@@ -45,7 +48,8 @@ namespace fit_life.Controllers
                     request.Instrucoes,
                     request.AreaTreinada,
                     request.Repeticoes,
-                    request.Series
+                    request.Series,
+                    request.ImagemBase64
                 );
 
                 return CreatedAtAction(nameof(GetById), new { id = novoExercicio.Id }, novoExercicio);
@@ -65,7 +69,8 @@ namespace fit_life.Controllers
                 request.Instrucoes,
                 request.AreaTreinada,
                 request.Repeticoes,
-                request.Series
+                request.Series,
+                request.ImagemBase64
             );
 
             if (exercicioAtualizado == null)
@@ -85,16 +90,4 @@ namespace fit_life.Controllers
         }
     }
 
-    public class CreateExercicioRequest
-    {
-        public string Nome { get; set; }
-        public string Instrucoes { get; set; }
-        public string AreaTreinada { get; set; }
-        public int Repeticoes { get; set; }
-        public int Series { get; set; }
-    }
-
-    public class UpdateExercicioRequest : CreateExercicioRequest
-    {
-    }
 }
